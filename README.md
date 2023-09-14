@@ -21,8 +21,11 @@ These fastq files were processed to
 In order to count the number of breaks occuring at AsiSI sites on chr21 in each sample they can be intersected with a bed file that contains the positions of AsiSI sites on chromsome 21: [chr21_AsiSI_sites.t2t.bed](data/chr21_AsiSI_sites.t2t.bed)
 
 ## Instructions
-In a workflow manager of your choice write a pipeline to
-1. **Intersect each sample break bed file with the AsiSI site bed file**
+In a workflow manager of your choice write a pipeline to process each sample in parallel
+1. ** Filter out reads that have a mapping quality of < 30 **
+   Use python code to read in the sample bed file and use a generator to yield only those lines where the count at an AsiSI site > 1
+
+**Intersect each sample break bed file with the AsiSI site bed file**
    This should be parallelised so that each samples initiates its own process. Run this operation so as to count the number of breaks at each site
 2. **Sum and normalise the counts** 
    Chain the previous process to another process that takes the output from 1 and uses python and python libraries code to perform the following
