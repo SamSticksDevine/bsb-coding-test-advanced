@@ -21,11 +21,13 @@ These fastq files were processed to
 In order to count the number of breaks occuring at AsiSI sites on chr21 in each sample they can be intersected with a bed file that contains the positions of AsiSI sites on chromsome 21: [chr21_AsiSI_sites.t2t.bed](data/chr21_AsiSI_sites.t2t.bed)
 
 ## Instructions
-Write a Nextflow script using DSL2 to
+In a workflow manager of your choice write a pipeline to
 1. **Intersect each sample break bed file with the AsiSI site bed file**
    This should be parallelised so that each samples initiates its own process. Run this operation so as to count the number of breaks at each site
 2. **Sum and normalise the counts** 
-    Chain the previous process to another process that takes the output from 1 and uses python and/or python libraries in order to
+   Chain the previous process to another process that takes the output from 1 and uses python and python libraries code to perform the following
+   1. Read in the output file from the previous step and use a generator to yield only those lines where the count at an AsiSI site > 1
+
     1. **Sum the number of AsiSI breaks**  
         Each sample will contain zero or more breaks at each of the sites on chr21. Find the sum of the AsiSI breaks per sample.
     2. **Normalize the number of AsiSI breaks**  
@@ -34,7 +36,7 @@ Write a Nextflow script using DSL2 to
    If you have time collect and combine all these outputs into a single file withiin nextflow.
 
 **Plot the data**
-Take the Nextflow pipeline outputs and plot the data so that it is possible to determine if there are clusters of samples representing control and treated subsets.
+Take the pipeline outputs and plot the data so that it is possible to determine if there are clusters of samples representing control and treated subsets.
 
 ## Questions
 1.	Which of the samples are likely to be controls or treated?
