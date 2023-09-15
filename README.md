@@ -30,9 +30,9 @@ It is not expected that all of these will be implemented, but using these even w
 
 ### Data processing pipeline
 In a workflow manager of your choice write a pipeline to process each sample in parallel through steps 1 and 3 and combine the final outputs into a single file in step 4.
-1. **Filter out reads that have a mapping quality of < 30**
+1. **Filter out reads that have a mapping quality of < 30**  
    Use python code to read in the sample bed file and use a generator to yield only those lines where the mapQ (5th column) > 60. Write these to an output file which will be a filtered bed file.
-2. **Intersect each sample break bed file with the AsiSI site bed file**
+2. **Intersect each sample break bed file with the AsiSI site bed file**  
    Intersect the breaks remaining after filtering from the previous steps with the AsiSI sites recorded in the chr21_AsiSI_sites.t2t.bed file 
 3. **Sum and normalise the counts** 
    Takes the output from the previous step to perform the following
@@ -40,7 +40,7 @@ In a workflow manager of your choice write a pipeline to process each sample in 
       Each sample will contain zero or more breaks at each of the sites on chr21. Find the sum of the AsiSI breaks per sample.
     2. **Normalize the number of AsiSI breaks**  
       The initial break bed file for each sample will contain the total number of breaks per sample. In order to account for different amounts of starting material, divide the sum of AsiSI breaks (step 3.1) by `total breaks/1000` so that the data consists of the normalised sum AsiSI breaks for each sample. N.B /1000 used to obtain more readable numbers typically > 1.
-4. **Collect normalised number of AsiSI breaks**
+4. **Collect normalised number of AsiSI breaks**  
    Combine all these outputs into a single file.
 
 ### Data plottimg
