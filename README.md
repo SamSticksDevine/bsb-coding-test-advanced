@@ -31,7 +31,7 @@ It is not expected that all of these will be implemented, but using these even w
 ### Data processing pipeline
 In a workflow manager of your choice write a pipeline to process each sample in parallel through steps 1 and 3 and combine the final outputs into a single file in step 4.
 1. **Filter out reads that have a mapping quality of < 30**  
-   Use python code to read in the sample bed file and use a generator to yield only those lines where the mapQ (5th column) > 60. Write these to an output file which will be a filtered bed file.
+   Use python code to read in the sample bed file and use a generator to yield only those lines where the mapQ (5th column) >= 30. Write these to an output file which will be a filtered bed file.
 2. **Intersect each sample break bed file with the AsiSI site bed file**  
    Intersect the breaks remaining after filtering from the previous steps with the AsiSI sites recorded in the chr21_AsiSI_sites.t2t.bed file 
 3. **Sum and normalise the counts** 
