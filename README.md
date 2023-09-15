@@ -13,7 +13,7 @@ Fastqs files were derived from an INDUCE-seq experiment with 16 samples where a 
 ## Starting Data
  In order to keep the size of the fastqs small and the computation tractable, the reads were down-sampled and filtered to only include those that belong to chr21.
 ## Starting Data
-These fastq files were processed to 
+These fastq files have already been processed to 
 1.	Map the reads to chromosome 21
 2.	Convert the position of the reads contained in the bam files to genomic intervals stored in a bed file.
 3.	Process the bed file so that the coordinates are adjusted to include **just** the break site. The outputs from this process are stored in [breaks](data/breaks/) 
@@ -21,31 +21,36 @@ These fastq files were processed to
 In order to count the number of breaks occuring at AsiSI sites on chr21 in each sample they can be intersected with a bed file that contains the positions of AsiSI sites on chromsome 21: [chr21_AsiSI_sites.t2t.bed](data/chr21_AsiSI_sites.t2t.bed)
 
 ## Instructions
-In a workflow manager of your choice write a pipeline to process each sample in parallel
-1. ** Filter out reads that have a mapping quality of < 30 **
-   Use python code to read in the sample bed file and use a generator to yield only those lines where the count at an AsiSI site > 1
+Where using Python code try where possible to use advanced features such as
+1. A timing decorator for a process
+2. List comprehensions
+3. Lambda functions
 
-**Intersect each sample break bed file with the AsiSI site bed file**
-   This should be parallelised so that each samples initiates its own process. Run this operation so as to count the number of breaks at each site
-2. **Sum and normalise the counts** 
-   Chain the previous process to another process that takes the output from 1 and uses python and python libraries code to perform the following
-   1. Read in the output file from the previous step and use a generator to yield only those lines where the count at an AsiSI site > 1
+It is not expected that all of these will be implemented, but using these even where not absolutely required will demonstrate your ability to code these features.
 
+### Data processing pipeline
+In a workflow manager of your choice write a pipeline to process each sample in parallel through steps 1 and 3 and combine the final outputs into a single file in step 4.
+1. **Filter out reads that have a mapping quality of < 30**
+   Use python code to read in the sample bed file and use a generator to yield only those lines where the mapQ (5th column) > 60. Write these to an output file which will be a filtered bed file.
+2. **Intersect each sample break bed file with the AsiSI site bed file**
+   Intersect the breaks remaining after filtering from the previous steps with the AsiSI sites recorded in the chr21_AsiSI_sites.t2t.bed file 
+3. **Sum and normalise the counts** 
+   Takes the output from the previous step to perform the following
     1. **Sum the number of AsiSI breaks**  
-        Each sample will contain zero or more breaks at each of the sites on chr21. Find the sum of the AsiSI breaks per sample.
+      Each sample will contain zero or more breaks at each of the sites on chr21. Find the sum of the AsiSI breaks per sample.
     2. **Normalize the number of AsiSI breaks**  
-      The initial break bed file for each sample will contain the total number of breaks per sample. In order to account for different amounts of starting material, divide the sum of AsiSI breaks (step 2.1) by (total breaks/1000), so that the data consists of the normalised sum AsiSI breaks for each sample.
-3. **Collect normalised number of AsiSI breaks**
-   If you have time collect and combine all these outputs into a single file withiin nextflow.
+      The initial break bed file for each sample will contain the total number of breaks per sample. In order to account for different amounts of starting material, divide the sum of AsiSI breaks (step 3.1) by `total breaks/1000` so that the data consists of the normalised sum AsiSI breaks for each sample. N.B /1000 used to obtain more readable numbers typically > 1.
+4. **Collect normalised number of AsiSI breaks**
+   Combine all these outputs into a single file.
 
-**Plot the data**
-Take the pipeline outputs and plot the data so that it is possible to determine if there are clusters of samples representing control and treated subsets.
+### Data plottimg
+Take the pipeline outputs and plot the data in order to determine which samples represent the control and treated subsets.
 
 ## Questions
 1.	Which of the samples are likely to be controls or treated?
 2.	Are there any you are uncertain of?
 3.	Can you explain the samples in the uncertain group?
-4.	What is the maximum percentage of possible AsiSI cut sites on chromosome 21 (as described in the chr21_AsiSI_sites.t2t.bed file) observed in a single sample?
+4.	Of all the possible AsiSI sites described in the chr21_AsiSI_sites.t2t.bed file what is the maximum percentage observed in a single sample?
 
 ## Result submission
 Please submit your answer and code to a publicly available git repository
