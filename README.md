@@ -43,8 +43,8 @@ In a workflow manager of your choice write a pipeline to process each sample in 
 4. **Collect normalised number of AsiSI breaks**  
    Combine all these outputs into a single file.
 
-### Data Analysis plotting
-Take the pipeline outputs and use python code to read in, plot and. interpret the data in order to determine which samples are most likely to represent the control and treated subsets.
+### Data Analysis and plotting
+Take the pipeline outputs and use python code to read in, plot and interpret the data in order to determine which samples are most likely to represent the control and treated subsets. If appropriate feel free to use statistical or clustering techniques to help with interpretation.
 
 ## Questions
 1.	Which of the samples are likely to be controls or treated?
