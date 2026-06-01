@@ -1,17 +1,24 @@
 process FILTER_BED {
 
-    tag "${bed.simpleName}"
+    publishDir "${params.outdir}/filtered", mode: 'copy'
+    tag "${sample}"
 
     input:
-    path bed
+    tuple val(sample), path(bed)
 
     output:
-    path "*.filtered.bed"
+    tuple val(sample), path("*.filtered.bed")
 
     script:
     """
-    python ${projectDir}/bin/filter_bed.py \
+    python ${baseDir}/bin/filter_bed.py \
         ${bed} \
-        ${bed.simpleName}.filtered.bed
+        ${bed.simpleName}.filtered.bed \
+        ${params.min_mapq}
+    """
+
+    stub:
+    """
+    touch ${bed.simpleName}.filtered.bed
     """
 }
