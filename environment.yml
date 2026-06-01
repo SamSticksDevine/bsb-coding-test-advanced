@@ -1,0 +1,11 @@
+name: induce-seq
+channels:
+  - bioconda
+  - conda-forge
+dependencies:
+  - python=3.11
+  - bedtools
+  - numpy
+  - pandas
+  - scipy
+  - matplotlib
