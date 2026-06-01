@@ -1,5 +1,48 @@
 #  Broken String Biosciences Bioinformatician pre-interview coding test
 
+## Environment setup
+
+This project uses Conda for reproducibility.
+
+### 1. Install Miniconda (if not already installed)
+
+https://docs.conda.io/en/latest/miniconda.html
+
+### 2. Create environment
+
+```bash
+conda env create -f environment.yml
+conda activate induce-seq
+```
+
+All dependencies are defined in `environment.yml`.
+
+## Run pipeline
+
+```bash
+nextflow run main.nf 
+```
+
+there is also the option for a dryrun with `-stub` 
+
+## Input data
+
+All input files are located in `data/`:
+
+- `data/breaks/` → per-sample BED files of DNA break sites
+- `data/chr21_AsiSI_sites.t2t.bed` → reference AsiSI restriction sites on chromosome 21
+
+## Pipeline steps
+
+1. Filter reads by mapping quality (MAPQ ≥ 30)
+2. Intersect filtered breaks with AsiSI restriction sites using bedtools
+3. Compute:
+   - Total AsiSI overlaps per sample
+   - Normalised break count: (AsiSI breaks) / (total breaks / 1000)
+4. Aggregate results across all samples into a summary table
+
+
+# Overview
 The purpose of this exercise is for you to process some of the outputs of an INDUCE-seq sequencing run in order to describe and interpret the number of breaks that occur at specific sites in the genome
 
 ## Introduction
