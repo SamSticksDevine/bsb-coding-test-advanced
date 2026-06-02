@@ -1,10 +1,56 @@
 #  Broken String Biosciences Bioinformatician pre-interview coding test
 
+## Overview
+Nextflow pipeline and downstream analysis notebook to quantify DNA double-strand breaks at AsiSI restriction sites using INDUCE-seq data (chr21 subset).
+
+The workflow processes BED-formatted breakend calls, intersects them with known restriction sites, and computes per-sample enrichment metrics to distinguish treated and control samples. 
+
+## Workflow
+1. Filter reads by mapping quality (MAPQ ≥ threshold)
+2. Intersect filtered reads with AsiSI restriction sites
+3. Compute per-sample enrichment statistics
+4. Generate consolidated summary table
+
+## Requirements
+- Nextflow ≥ 22
+- Conda (see environment.yml)
+- Python 3.11 (via environment)
+
+## Usage
+```bash
+nextflow run main.nf 
+```
+
+Parameters can be configured at runtime: 
+| Parameter       | Description                                     |
+| --------------- | ----------------------------------------------- |
+| `--breaks`      | Directory containing input BED breakend files   |
+| `--asisi_sites` | BED file of AsiSI restriction sites (chr21)     |
+| `--min_mapq`    | Minimum mapping quality threshold (default: 30) |
+| `--outdir`      | Output directory for results (default: reesults)|
+
+```bash
+nextflow run main.nf \
+  --breaks data/breaks \
+  --asisi_sites data/chr21_AsiSI_sites.t2t.bed \
+  --min_mapq 30 \
+  --outdir results/chr21_AsiSI
+```
+
+### Stub run
+Pipeline structure can be validated using stub execution:
+
+```bash 
+nextflow run main.nf -stub
+```
+
+### Python scripts
+All Python scripts executed within the Nextflow pipeline are stored in the `bin/` directory, so they are automatically available in the execution environment.
+
 ## Environment setup
+Dependencies are defined in `environment.yml`.
 
-This project uses Conda for reproducibility.
-
-### 1. Install Miniconda (if not already installed)
+### 1. Install Miniconda
 
 https://docs.conda.io/en/latest/miniconda.html
 
@@ -15,31 +61,34 @@ conda env create -f environment.yml
 conda activate induce-seq
 ```
 
-All dependencies are defined in `environment.yml`.
-
-## Run pipeline
-
-```bash
-nextflow run main.nf 
-```
-
-there is also the option for a dryrun with `-stub` 
-
 ## Input data
 
 All input files are located in `data/`:
-
 - `data/breaks/` → per-sample BED files of DNA break sites
 - `data/chr21_AsiSI_sites.t2t.bed` → reference AsiSI restriction sites on chromosome 21
 
-## Pipeline steps
+## Output 
+The pipeline produces:
 
-1. Filter reads by mapping quality (MAPQ ≥ 30)
-2. Intersect filtered breaks with AsiSI restriction sites using bedtools
-3. Compute:
-   - Total AsiSI overlaps per sample
-   - Normalised break count: (AsiSI breaks) / (total breaks / 1000)
-4. Aggregate results across all samples into a summary table
+- Filtered BED files (MAPQ-filtered reads)
+- Intersected BED files (AsiSI overlaps)
+- induce_seq_chr21_asisi_summary.tsv:
+   - total breaks per sample
+   - AsiSI-associated breaks
+   - normalised enrichment scores
+
+## Analysis
+A downstream Jupyter notebook performs:
+
+- sample classification (control vs treated)
+- visualisation of enrichment
+- exploratory statistical analysis
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------
 
 
 # Overview
