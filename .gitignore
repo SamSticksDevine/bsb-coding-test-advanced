@@ -1,6 +1,6 @@
-data/
-results/
-work/
+*data/
+*results/
+*work/
 *nextflow*
 notes.md
 *.vscode*
