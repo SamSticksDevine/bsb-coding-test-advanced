@@ -45,12 +45,11 @@ def parse_args():
 
     return parser.parse_args()
 
-
 if __name__ == "__main__":
-
+        
     args = parse_args()
 
     with open(args.input_bed) as infile, open(args.output_bed, "w") as outfile:
 
         for line in filter_records(infile, args.min_mapq):
-            outfile.write(line) 
+            outfile.write(line)
