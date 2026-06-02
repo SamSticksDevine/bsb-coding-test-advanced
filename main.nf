@@ -26,25 +26,33 @@ include { COLLECT_RESULTS } from './modules/collect_results'
 
 workflow {
 
+    // Validate required parameters early to fail fast
     if (!params.breaks) { error('ERROR: <breaks> not specified!') }
     if (!params.asisi_sites) { error('ERROR: <asisi_sites> not specified!') }
     if (!params.min_mapq) { error('ERROR: <min_mapq> not specified!') }
 
+    // Create sample-channel pairs for downstream parallel processing
     breaks = Channel.fromPath("${params.breaks}/*.bed")
         .map { file ->
             def sample = file.name.replace(".breakends.bed", "")
             tuple(sample, file)
         }
 
+    // Broadcast AsiSI sites file to all processes
     asisi = Channel.value(file(params.asisi_sites))
 
+    // Step 1: filter low-quality reads
     filtered = FILTER_BED(breaks)
 
-    intersected = INTERSECT_BED( filtered, asisi )
-    
+    // Step 2: intersect filtered reads with restriction sites
+    intersected = INTERSECT_BED(filtered, asisi)
+
+    // Join filtered + intersected outputs for downstream summarisation
     filtered_intersect = filtered.join(intersected)
 
-    summaries = SUMMARISE( filtered_intersect )
+    // Step 3: compute per-sample summary statistics
+    summaries = SUMMARISE(filtered_intersect)
 
+    // Step 4: collect all sample outputs into a single report
     COLLECT_RESULTS(summaries.collect())
 }
